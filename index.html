@@ -74,7 +74,7 @@
     .add-btn:active { transform: scale(0.96); }
     .entry-list { display: flex; flex-direction: column; gap: 12px; }
 
-    /* ===== Аккордеон для сортов ===== */
+    /* Аккордеон для сортов (оставляем как есть) */
     .sort-card {
       background: rgba(255,252,255,0.6);
       border-radius: 18px;
@@ -91,9 +91,7 @@
       background: rgba(255,248,255,0.4);
       transition: background 0.2s;
     }
-    .sort-card-header:hover {
-      background: rgba(255,245,255,0.6);
-    }
+    .sort-card-header:hover { background: rgba(255,245,255,0.6); }
     .sort-card-header .sort-name-display {
       font-weight: 600;
       font-size: 1.1rem;
@@ -204,7 +202,7 @@
     .sort-card-body .delete-btn:active { transform: scale(1.2); }
     .sort-card-body .delete-btn:hover { color: #b06080; }
 
-    /* Остальные блоки (не сорта) – как раньше */
+    /* Обычные записи (не сорта) */
     .entry-row {
       display: flex;
       flex-direction: column;
@@ -276,20 +274,36 @@
       accent-color: #b89ab8;
       cursor: pointer;
     }
-    .entry-row .delete-btn {
+    .entry-row .action-buttons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+    .entry-row .action-buttons button {
       background: none;
       border: none;
-      font-size: 1.6rem;
+      font-size: 1.2rem;
       color: #b08ab0;
       cursor: pointer;
-      padding: 4px 10px;
+      padding: 4px 8px;
       transition: color 0.2s, transform 0.1s;
-      line-height: 1;
-      align-self: flex-end;
       touch-action: manipulation;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 500;
     }
-    .entry-row .delete-btn:active { transform: scale(1.2); }
+    .entry-row .action-buttons button:hover { color: #8a6a8a; }
+    .entry-row .action-buttons button:active { transform: scale(0.95); }
+    .entry-row .action-buttons .archive-btn { color: #b08ab0; font-size: 0.9rem; }
+    .entry-row .action-buttons .archive-btn:hover { color: #8a6a8a; }
+    .entry-row .action-buttons .delete-btn {
+      font-size: 1.4rem;
+      color: #b08ab0;
+    }
+    .entry-row .action-buttons .delete-btn:hover { color: #b06080; }
 
+    /* Хэштеги */
     .hashtag-set {
       display: flex;
       flex-direction: column;
@@ -333,12 +347,15 @@
       border-color: #b89ab8;
       box-shadow: 0 0 0 3px rgba(180,140,180,0.15);
     }
+
     .empty-message {
       color: #b09ab0;
       font-style: italic;
       padding: 8px 0;
       font-size: 0.95rem;
     }
+
+    /* Панель инструментов */
     .tools {
       display: flex;
       flex-wrap: wrap;
@@ -362,6 +379,7 @@
     }
     .tools button:active { transform: scale(0.96); }
     .tools input[type="file"] { display: none; }
+
     .sync-status {
       text-align: center;
       font-size: 0.85rem;
@@ -371,6 +389,135 @@
     }
     .sync-status .error { color: #c0392b; }
     .sync-status .success { color: #27ae60; }
+
+    /* Модальное окно */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(3px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #faf5fa;
+      border-radius: 28px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(120,80,120,0.25);
+      overflow: hidden;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(210,180,210,0.2);
+      background: rgba(255,248,255,0.6);
+    }
+    .modal-header h2 {
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: #6a4a6a;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: #b08ab0;
+      cursor: pointer;
+      padding: 0 8px;
+      transition: transform 0.2s;
+    }
+    .modal-close:hover { transform: rotate(90deg); }
+    .modal-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(210,180,210,0.2);
+      background: rgba(255,248,255,0.3);
+      overflow-x: auto;
+      flex-shrink: 0;
+    }
+    .modal-tab {
+      padding: 12px 20px;
+      font-weight: 600;
+      color: #6a4a6a;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: border-color 0.2s, background 0.2s;
+      white-space: nowrap;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.95rem;
+    }
+    .modal-tab:hover { background: rgba(255,245,250,0.4); }
+    .modal-tab.active { border-bottom-color: #b89ab8; background: rgba(255,245,250,0.3); }
+    .modal-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+    }
+    .modal-content .archive-item {
+      background: rgba(255,252,255,0.6);
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(210,180,210,0.15);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+    }
+    .modal-content .archive-item .info {
+      flex: 1;
+      min-width: 150px;
+    }
+    .modal-content .archive-item .info .title {
+      font-weight: 600;
+      color: #4a3a4a;
+    }
+    .modal-content .archive-item .info .desc {
+      font-size: 0.85rem;
+      color: #6a4a6a;
+      opacity: 0.8;
+    }
+    .modal-content .archive-item .info .meta {
+      font-size: 0.8rem;
+      color: #8a7a8a;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      margin-top: 2px;
+    }
+    .modal-content .archive-item .restore-btn {
+      background: #d9c4d9;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #4a2a4a;
+      cursor: pointer;
+      transition: background 0.2s;
+      touch-action: manipulation;
+    }
+    .modal-content .archive-item .restore-btn:active { transform: scale(0.96); }
+    .modal-content .empty-archive {
+      color: #b09ab0;
+      font-style: italic;
+      padding: 20px 0;
+      text-align: center;
+    }
 
     @media (max-width: 600px) {
       body { padding: 12px 8px; font-size: 15px; }
@@ -403,6 +550,11 @@
       .section-header { flex-direction: column; align-items: stretch; }
       .section-title { font-size: 1.2rem; }
       .tools button { flex: 1 1 100%; text-align: center; padding: 14px; }
+      .modal { max-height: 90vh; }
+      .modal-header { padding: 14px 16px; }
+      .modal-content { padding: 16px; }
+      .modal-tab { padding: 10px 14px; font-size: 0.85rem; }
+      .entry-row .action-buttons { justify-content: flex-start; }
     }
     .section:nth-child(1) .section-title { color: #7a5a7a; }
     .section:nth-child(2) .section-title { color: #6a7a6a; }
@@ -422,6 +574,7 @@
     <button id="import-btn">📥 Импорт</button>
     <button id="sync-pull-btn">⬇️ Загрузить из облака</button>
     <button id="sync-push-btn">⬆️ Сохранить в облако</button>
+    <button id="archive-btn">📦 Архив постов</button>
     <input type="file" id="file-input" accept=".json">
   </div>
 
@@ -478,6 +631,24 @@
   </div>
 </div>
 
+<!-- Модальное окно архива -->
+<div class="modal-overlay" id="archive-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>📦 Архив постов</h2>
+      <button class="modal-close" id="modal-close-btn">✕</button>
+    </div>
+    <div class="modal-tabs" id="modal-tabs">
+      <button class="modal-tab active" data-tab="info">Информативные</button>
+      <button class="modal-tab" data-tab="aesthetic">Эстетичный</button>
+      <button class="modal-tab" data-tab="qa">Вопрос-ответ</button>
+    </div>
+    <div class="modal-content" id="modal-content">
+      <!-- динамически заполняется -->
+    </div>
+  </div>
+</div>
+
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -487,7 +658,7 @@
   (function() {
     // ========== ВСТАВЬТЕ ВАШУ КОНФИГУРАЦИЮ FIREBASE ==========
     const firebaseConfig = {
-     apiKey: "AIzaSyA5MMiGc44Ey1ANK-JlQ1lQlBHeCB3AayY",
+      apiKey: "AIzaSyA5MMiGc44Ey1ANK-JlQ1lQlBHeCB3AayY",
       authDomain: "violet-tracker.firebaseapp.com",
       projectId: "violet-tracker",
       storageBucket: "violet-tracker.firebasestorage.app",
@@ -497,7 +668,6 @@
     };
     // =========================================================
 
-    // Инициализируем Firebase только если есть конфигурация
     let db, auth;
     let firebaseReady = false;
     if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "AIzaSy...") {
@@ -517,6 +687,9 @@
       info: [],
       aesthetic: [],
       qa: [],
+      archivedInfo: [],
+      archivedAesthetic: [],
+      archivedQA: [],
       hashtags: [
         { id: 1, tags: '#фиалки #комнатныецветы #уходзафиалками #красотавокруг #любовькцветам', lastUsed: '' },
         { id: 2, tags: '#нежныефиалки #цветочнаяэстетика #атмосферауюта #красотаприроды #вдохновениецветами', lastUsed: '' },
@@ -541,6 +714,10 @@
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
+          // Проверяем наличие архивных полей
+          if (!parsed.archivedInfo) parsed.archivedInfo = [];
+          if (!parsed.archivedAesthetic) parsed.archivedAesthetic = [];
+          if (!parsed.archivedQA) parsed.archivedQA = [];
           if (!parsed.hashtags || parsed.hashtags.length === 0) {
             parsed.hashtags = DEFAULT_DATA.hashtags;
           }
@@ -570,7 +747,8 @@
       return Date.now() + Math.random().toString(36).substr(2, 6);
     }
 
-    // ======== Рендеринг сортов (аккордеон) ========
+    // ======== Рендеринг ========
+    // Сорта (аккордеон) — без изменений
     function renderSorts() {
       const container = document.getElementById('sort-list');
       if (data.sorts.length === 0) {
@@ -619,149 +797,85 @@
       });
       container.innerHTML = html;
 
-      // Обработчики для аккордеона
       container.querySelectorAll('.sort-card').forEach(card => {
         const header = card.querySelector('.sort-card-header');
         const body = card.querySelector('.sort-card-body');
         const icon = card.querySelector('.toggle-icon');
-
         header.addEventListener('click', function(e) {
-          // Не сворачиваем, если клик по кнопке удаления или чекбоксу
           if (e.target.closest('.delete-btn') || e.target.closest('.checkbox-field')) return;
           const isOpen = body.classList.toggle('open');
           icon.classList.toggle('open', isOpen);
         });
-
-        // Авто-рост textarea внутри тела
         const textarea = body.querySelector('textarea');
         if (textarea) {
           autoGrow(textarea);
-          textarea.addEventListener('input', function() {
-            autoGrow(this);
-          });
+          textarea.addEventListener('input', function() { autoGrow(this); });
         }
       });
     }
 
-    // ======== Рендеринг остальных блоков (без изменений) ========
-    function renderInfo() {
-      const container = document.getElementById('info-list');
-      if (data.info.length === 0) {
-        container.innerHTML = '<div class="empty-message">Нет информационных постов.</div>';
+    // Общая функция для рендеринга постов (информативные, эстетичные, вопрос-ответ)
+    function renderPosts(containerId, dataArray, type, fields) {
+      const container = document.getElementById(containerId);
+      if (dataArray.length === 0) {
+        container.innerHTML = `<div class="empty-message">Нет записей.</div>`;
         return;
       }
       let html = '';
-      data.info.forEach(item => {
-        html += `
-          <div class="entry-row" data-id="${item.id}" data-type="info">
-            <div class="field">
-              <textarea data-field="name" placeholder="Название" rows="1">${escapeHtml(item.name)}</textarea>
-            </div>
-            <div class="field">
-              <textarea data-field="description" placeholder="Краткое описание" rows="1" class="desc-input">${escapeHtml(item.description)}</textarea>
-            </div>
+      dataArray.forEach(item => {
+        // формируем поля в зависимости от типа
+        let fieldsHtml = '';
+        if (type === 'info') {
+          fieldsHtml = `
+            <div class="field"><textarea data-field="name" placeholder="Название" rows="1">${escapeHtml(item.name)}</textarea></div>
+            <div class="field"><textarea data-field="description" placeholder="Краткое описание" rows="1" class="desc-input">${escapeHtml(item.description)}</textarea></div>
             <div class="field-row">
-              <div class="field">
-                <label>Дата</label>
-                <input type="date" value="${item.date || ''}" data-field="date">
-              </div>
-              <div class="field checkbox-field">
-                <input type="checkbox" ${item.published ? 'checked' : ''} data-field="published">
-                <label>Опубликовано</label>
-              </div>
+              <div class="field"><label>Дата</label><input type="date" value="${item.date || ''}" data-field="date"></div>
+              <div class="field checkbox-field"><input type="checkbox" ${item.published ? 'checked' : ''} data-field="published"><label>Опубликовано</label></div>
             </div>
-            <button class="delete-btn" data-action="delete" title="Удалить">✕</button>
+          `;
+        } else if (type === 'aesthetic' || type === 'qa') {
+          fieldsHtml = `
+            <div class="field"><textarea data-field="name" placeholder="Название" rows="1">${escapeHtml(item.name)}</textarea></div>
+            <div class="field"><textarea data-field="description" placeholder="Краткое описание" rows="1" class="desc-input">${escapeHtml(item.description)}</textarea></div>
+            <div class="field-row">
+              <div class="field"><label>Формат</label>
+                <select data-field="format">
+                  <option value="" ${!item.format ? 'selected' : ''} disabled hidden>Выберите</option>
+                  <option value="Публикация" ${item.format === 'Публикация' ? 'selected' : ''}>Публикация</option>
+                  <option value="Карусель" ${item.format === 'Карусель' ? 'selected' : ''}>Карусель</option>
+                  <option value="Reals" ${item.format === 'Reals' ? 'selected' : ''}>Reals</option>
+                </select>
+              </div>
+              <div class="field"><label>Дата</label><input type="date" value="${item.date || ''}" data-field="date"></div>
+              <div class="field checkbox-field"><input type="checkbox" ${item.published ? 'checked' : ''} data-field="published"><label>Опубликовано</label></div>
+            </div>
+          `;
+        }
+        html += `
+          <div class="entry-row" data-id="${item.id}" data-type="${type}">
+            ${fieldsHtml}
+            <div class="action-buttons">
+              <button class="archive-btn" data-action="archive" title="Спрятать в архив">📂 Спрятать в архив</button>
+              <button class="delete-btn" data-action="delete" title="Удалить">✕</button>
+            </div>
           </div>
         `;
       });
       container.innerHTML = html;
       container.querySelectorAll('textarea').forEach(t => autoGrow(t));
+    }
+
+    function renderInfo() {
+      renderPosts('info-list', data.info, 'info');
     }
 
     function renderAesthetic() {
-      const container = document.getElementById('aesthetic-list');
-      if (data.aesthetic.length === 0) {
-        container.innerHTML = '<div class="empty-message">Нет эстетичного контента.</div>';
-        return;
-      }
-      let html = '';
-      data.aesthetic.forEach(item => {
-        html += `
-          <div class="entry-row" data-id="${item.id}" data-type="aesthetic">
-            <div class="field">
-              <textarea data-field="name" placeholder="Название" rows="1">${escapeHtml(item.name)}</textarea>
-            </div>
-            <div class="field">
-              <textarea data-field="description" placeholder="Краткое описание" rows="1" class="desc-input">${escapeHtml(item.description)}</textarea>
-            </div>
-            <div class="field-row">
-              <div class="field">
-                <label>Формат</label>
-                <select data-field="format">
-                  <option value="" ${!item.format ? 'selected' : ''} disabled hidden>Выберите</option>
-                  <option value="Публикация" ${item.format === 'Публикация' ? 'selected' : ''}>Публикация</option>
-                  <option value="Карусель" ${item.format === 'Карусель' ? 'selected' : ''}>Карусель</option>
-                  <option value="Reals" ${item.format === 'Reals' ? 'selected' : ''}>Reals</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Дата</label>
-                <input type="date" value="${item.date || ''}" data-field="date">
-              </div>
-              <div class="field checkbox-field">
-                <input type="checkbox" ${item.published ? 'checked' : ''} data-field="published">
-                <label>Опубликовано</label>
-              </div>
-            </div>
-            <button class="delete-btn" data-action="delete" title="Удалить">✕</button>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-      container.querySelectorAll('textarea').forEach(t => autoGrow(t));
+      renderPosts('aesthetic-list', data.aesthetic, 'aesthetic');
     }
 
     function renderQA() {
-      const container = document.getElementById('qa-list');
-      if (data.qa.length === 0) {
-        container.innerHTML = '<div class="empty-message">Нет вопросов-ответов.</div>';
-        return;
-      }
-      let html = '';
-      data.qa.forEach(item => {
-        html += `
-          <div class="entry-row" data-id="${item.id}" data-type="qa">
-            <div class="field">
-              <textarea data-field="name" placeholder="Название" rows="1">${escapeHtml(item.name)}</textarea>
-            </div>
-            <div class="field">
-              <textarea data-field="description" placeholder="Краткое описание" rows="1" class="desc-input">${escapeHtml(item.description)}</textarea>
-            </div>
-            <div class="field-row">
-              <div class="field">
-                <label>Формат</label>
-                <select data-field="format">
-                  <option value="" ${!item.format ? 'selected' : ''} disabled hidden>Выберите</option>
-                  <option value="Публикация" ${item.format === 'Публикация' ? 'selected' : ''}>Публикация</option>
-                  <option value="Карусель" ${item.format === 'Карусель' ? 'selected' : ''}>Карусель</option>
-                  <option value="Reals" ${item.format === 'Reals' ? 'selected' : ''}>Reals</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Дата</label>
-                <input type="date" value="${item.date || ''}" data-field="date">
-              </div>
-              <div class="field checkbox-field">
-                <input type="checkbox" ${item.published ? 'checked' : ''} data-field="published">
-                <label>Опубликовано</label>
-              </div>
-            </div>
-            <button class="delete-btn" data-action="delete" title="Удалить">✕</button>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-      container.querySelectorAll('textarea').forEach(t => autoGrow(t));
+      renderPosts('qa-list', data.qa, 'qa');
     }
 
     function renderHashtags() {
@@ -792,25 +906,21 @@
 
     // ======== Синхронизация данных из DOM ========
     function syncAllFromDOM() {
-      // Сорта (аккордеон)
+      // Сорта
       document.querySelectorAll('#sort-list .sort-card').forEach(card => {
         const id = card.dataset.id;
         const item = data.sorts.find(el => el.id === id);
         if (!item) return;
         const body = card.querySelector('.sort-card-body');
         if (body) {
-          const nameTextarea = body.querySelector('textarea[data-field="name"]');
-          const formatSelect = body.querySelector('select[data-field="format"]');
-          const dateInput = body.querySelector('input[data-field="date"]');
-          const publishedCheck = body.querySelector('input[data-field="published"]');
-          if (nameTextarea) item.name = nameTextarea.value;
-          if (formatSelect) item.format = formatSelect.value;
-          if (dateInput) item.date = dateInput.value;
-          if (publishedCheck) item.published = publishedCheck.checked;
+          item.name = body.querySelector('textarea[data-field="name"]')?.value || '';
+          item.format = body.querySelector('select[data-field="format"]')?.value || '';
+          item.date = body.querySelector('input[data-field="date"]')?.value || '';
+          item.published = body.querySelector('input[data-field="published"]')?.checked || false;
         }
       });
 
-      // Остальные блоки
+      // Информативные
       document.querySelectorAll('#info-list .entry-row').forEach(row => {
         const id = row.dataset.id;
         const item = data.info.find(el => el.id === id);
@@ -820,6 +930,7 @@
         item.date = row.querySelector('input[data-field="date"]')?.value || '';
         item.published = row.querySelector('input[data-field="published"]')?.checked || false;
       });
+      // Эстетичный
       document.querySelectorAll('#aesthetic-list .entry-row').forEach(row => {
         const id = row.dataset.id;
         const item = data.aesthetic.find(el => el.id === id);
@@ -830,6 +941,7 @@
         item.date = row.querySelector('input[data-field="date"]')?.value || '';
         item.published = row.querySelector('input[data-field="published"]')?.checked || false;
       });
+      // QA
       document.querySelectorAll('#qa-list .entry-row').forEach(row => {
         const id = row.dataset.id;
         const item = data.qa.find(el => el.id === id);
@@ -851,16 +963,36 @@
       saveLocalData();
     }
 
-    // ======== Функция обновления заголовка карточки (при изменении названия или статуса) ========
-    function updateSortCardHeader(card, item) {
-      const nameDisplay = card.querySelector('.sort-name-display');
-      const statusSpan = card.querySelector('.sort-status');
-      if (nameDisplay) nameDisplay.textContent = item.name || 'Без названия';
-      if (statusSpan) {
-        const publishedText = item.published ? '✅ Опубликовано' : '⭕ Не опубликовано';
-        statusSpan.textContent = publishedText;
-        statusSpan.className = 'sort-status ' + (item.published ? 'published' : 'not-published');
-      }
+    // ======== Архивация и разархивация ========
+    function archivePost(id, type) {
+      // type может быть 'info', 'aesthetic', 'qa'
+      const sourceMap = { info: 'info', aesthetic: 'aesthetic', qa: 'qa' };
+      const destMap = { info: 'archivedInfo', aesthetic: 'archivedAesthetic', qa: 'archivedQA' };
+      const sourceKey = sourceMap[type];
+      const destKey = destMap[type];
+      if (!sourceKey || !destKey) return;
+
+      const index = data[sourceKey].findIndex(el => el.id === id);
+      if (index === -1) return;
+      const item = data[sourceKey].splice(index, 1)[0];
+      data[destKey].push(item);
+      renderAll();
+      if (firebaseReady && auth && auth.currentUser) saveToFirestore().catch(() => {});
+    }
+
+    function restorePost(id, type) {
+      const sourceMap = { info: 'archivedInfo', aesthetic: 'archivedAesthetic', qa: 'archivedQA' };
+      const destMap = { info: 'info', aesthetic: 'aesthetic', qa: 'qa' };
+      const sourceKey = sourceMap[type];
+      const destKey = destMap[type];
+      if (!sourceKey || !destKey) return;
+
+      const index = data[sourceKey].findIndex(el => el.id === id);
+      if (index === -1) return;
+      const item = data[sourceKey].splice(index, 1)[0];
+      data[destKey].push(item);
+      renderAll();
+      if (firebaseReady && auth && auth.currentUser) saveToFirestore().catch(() => {});
     }
 
     // ======== Работа с Firestore ========
@@ -895,6 +1027,10 @@
           if (doc.exists) {
             const remoteData = doc.data().data;
             if (remoteData) {
+              // Проверяем наличие архивных полей
+              if (!remoteData.archivedInfo) remoteData.archivedInfo = [];
+              if (!remoteData.archivedAesthetic) remoteData.archivedAesthetic = [];
+              if (!remoteData.archivedQA) remoteData.archivedQA = [];
               data = remoteData;
               saveLocalData();
               renderAll();
@@ -938,7 +1074,7 @@
     // ======== Обработчики событий ========
     function handleInputChange(e) {
       const target = e.target;
-      // Проверяем, не является ли событие внутри карточки сорта
+      // Проверяем карточку сорта
       const sortCard = target.closest('.sort-card');
       if (sortCard) {
         const id = sortCard.dataset.id;
@@ -949,19 +1085,15 @@
         if (field === 'name' || field === 'format' || field === 'date' || field === 'published') {
           item[field] = value;
           saveLocalData();
-          // Обновляем заголовок карточки (название и статус)
+          // Обновляем заголовок
           updateSortCardHeader(sortCard, item);
-          if (firebaseReady && auth && auth.currentUser) {
-            saveToFirestore().catch(() => {});
-          }
+          if (firebaseReady && auth && auth.currentUser) saveToFirestore().catch(() => {});
         }
-        if (target.tagName === 'TEXTAREA') {
-          autoGrow(target);
-        }
+        if (target.tagName === 'TEXTAREA') autoGrow(target);
         return;
       }
 
-      // Для остальных блоков
+      // Обычные посты
       const row = target.closest('.entry-row');
       if (!row) return;
       const id = row.dataset.id;
@@ -974,45 +1106,42 @@
       if (field === 'name' || field === 'description' || field === 'format' || field === 'date' || field === 'published') {
         item[field] = value;
         saveLocalData();
-        if (firebaseReady && auth && auth.currentUser) {
-          saveToFirestore().catch(() => {});
-        }
+        if (firebaseReady && auth && auth.currentUser) saveToFirestore().catch(() => {});
       }
-      if (target.tagName === 'TEXTAREA') {
-        autoGrow(target);
+      if (target.tagName === 'TEXTAREA') autoGrow(target);
+    }
+
+    function updateSortCardHeader(card, item) {
+      const nameDisplay = card.querySelector('.sort-name-display');
+      const statusSpan = card.querySelector('.sort-status');
+      if (nameDisplay) nameDisplay.textContent = item.name || 'Без названия';
+      if (statusSpan) {
+        const publishedText = item.published ? '✅ Опубликовано' : '⭕ Не опубликовано';
+        statusSpan.textContent = publishedText;
+        statusSpan.className = 'sort-status ' + (item.published ? 'published' : 'not-published');
       }
     }
 
-    function handleDelete(e) {
-      const deleteBtn = e.target.closest('[data-action="delete"]');
-      if (!deleteBtn) return;
-
-      // Проверяем, не является ли кнопка удаления внутри карточки сорта
-      const sortCard = deleteBtn.closest('.sort-card');
-      if (sortCard) {
-        const id = sortCard.dataset.id;
-        if (id) {
-          data.sorts = data.sorts.filter(el => el.id !== id);
-          renderAll();
-          if (firebaseReady && auth && auth.currentUser) {
-            saveToFirestore().catch(() => {});
-          }
-        }
-        return;
-      }
-
-      // Для остальных блоков
-      const row = deleteBtn.closest('.entry-row');
+    function handleActionClick(e) {
+      const target = e.target.closest('button[data-action]');
+      if (!target) return;
+      const action = target.dataset.action;
+      const row = target.closest('.entry-row');
       if (!row) return;
       const id = row.dataset.id;
       const type = row.dataset.type;
       if (!id || !type) return;
-      if (data[type]) {
-        data[type] = data[type].filter(el => el.id !== id);
-        renderAll();
-        if (firebaseReady && auth && auth.currentUser) {
-          saveToFirestore().catch(() => {});
+
+      if (action === 'delete') {
+        // Удаление
+        if (data[type]) {
+          data[type] = data[type].filter(el => el.id !== id);
+          renderAll();
+          if (firebaseReady && auth && auth.currentUser) saveToFirestore().catch(() => {});
         }
+      } else if (action === 'archive') {
+        // Архивация
+        archivePost(id, type);
       }
     }
 
@@ -1024,12 +1153,91 @@
         if (set) {
           set.lastUsed = target.value;
           saveLocalData();
-          if (firebaseReady && auth && auth.currentUser) {
-            saveToFirestore().catch(() => {});
-          }
+          if (firebaseReady && auth && auth.currentUser) saveToFirestore().catch(() => {});
         }
       }
     }
+
+    // ======== Модальное окно архива ========
+    function openArchiveModal() {
+      const modal = document.getElementById('archive-modal');
+      modal.classList.add('active');
+      renderArchiveTab('info'); // по умолчанию первая вкладка
+    }
+
+    function closeArchiveModal() {
+      document.getElementById('archive-modal').classList.remove('active');
+    }
+
+    function renderArchiveTab(tabType) {
+      const content = document.getElementById('modal-content');
+      const archiveMap = {
+        info: data.archivedInfo || [],
+        aesthetic: data.archivedAesthetic || [],
+        qa: data.archivedQA || []
+      };
+      const titleMap = {
+        info: 'Информативные посты',
+        aesthetic: 'Эстетичный контент',
+        qa: 'Мини вопрос-ответ'
+      };
+      const items = archiveMap[tabType] || [];
+      if (items.length === 0) {
+        content.innerHTML = `<div class="empty-archive">В архиве нет записей этого типа.</div>`;
+        return;
+      }
+      let html = '';
+      items.forEach(item => {
+        let details = '';
+        if (tabType === 'info') {
+          details = `Дата: ${item.date || 'не указана'} | Опубликовано: ${item.published ? '✅' : '❌'}`;
+        } else {
+          details = `Формат: ${item.format || 'не выбран'} | Дата: ${item.date || 'не указана'} | Опубликовано: ${item.published ? '✅' : '❌'}`;
+        }
+        html += `
+          <div class="archive-item" data-id="${item.id}" data-type="${tabType}">
+            <div class="info">
+              <div class="title">${escapeHtml(item.name) || 'Без названия'}</div>
+              ${item.description ? `<div class="desc">${escapeHtml(item.description)}</div>` : ''}
+              <div class="meta">${details}</div>
+            </div>
+            <button class="restore-btn" data-action="restore">↩️ Вернуть</button>
+          </div>
+        `;
+      });
+      content.innerHTML = html;
+
+      // Обработчики для кнопок "Вернуть"
+      content.querySelectorAll('.restore-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          const archiveItem = this.closest('.archive-item');
+          const id = archiveItem.dataset.id;
+          const type = archiveItem.dataset.type;
+          if (id && type) {
+            restorePost(id, type);
+            // Перерисовываем текущую вкладку
+            renderArchiveTab(tabType);
+          }
+        });
+      });
+    }
+
+    // Переключение вкладок
+    document.getElementById('modal-tabs').addEventListener('click', function(e) {
+      const tabBtn = e.target.closest('.modal-tab');
+      if (!tabBtn) return;
+      // Убираем активный класс у всех вкладок
+      this.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+      tabBtn.classList.add('active');
+      const tabType = tabBtn.dataset.tab;
+      renderArchiveTab(tabType);
+    });
+
+    // Закрытие модалки
+    document.getElementById('modal-close-btn').addEventListener('click', closeArchiveModal);
+    document.getElementById('archive-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeArchiveModal();
+    });
 
     // ======== Добавление ========
     function addSort() {
@@ -1077,10 +1285,14 @@
       reader.onload = function(e) {
         try {
           const imported = JSON.parse(e.target.result);
+          // Проверяем наличие обязательных полей
           if (!imported.sorts || !imported.info || !imported.aesthetic || !imported.qa || !imported.hashtags) {
             alert('Неверный формат файла.');
             return;
           }
+          if (!imported.archivedInfo) imported.archivedInfo = [];
+          if (!imported.archivedAesthetic) imported.archivedAesthetic = [];
+          if (!imported.archivedQA) imported.archivedQA = [];
           if (confirm('Импорт заменит все текущие данные. Продолжить?')) {
             data = imported;
             renderAll();
@@ -1109,16 +1321,17 @@
         setSyncStatus('не авторизован или Firebase не настроен', 'error');
       }
     });
+    document.getElementById('archive-btn').addEventListener('click', openArchiveModal);
 
     // ======== Инициализация ========
     document.addEventListener('DOMContentLoaded', function() {
       renderAll();
 
-      // Подписываемся на события для всех списков
+      // События для всех списков
       document.querySelectorAll('#sort-list, #info-list, #aesthetic-list, #qa-list, #hashtag-container').forEach(container => {
         container.addEventListener('change', handleInputChange);
         container.addEventListener('input', handleInputChange);
-        container.addEventListener('click', handleDelete);
+        container.addEventListener('click', handleActionClick);
       });
 
       // Для хэштегов отдельно
